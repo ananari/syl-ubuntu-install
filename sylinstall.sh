@@ -2,7 +2,10 @@
 
 # Made by Anaïs Ahmed 24-01-2021
 
-cat <<EOF > ~/Documents/testcat2
+if [ -f ~/usr/share/X11/xkb/symbols/syl ]; then
+  echo "~/usr/share/X11/xkb/symbols/syl already exists - have you done this before?"; exit 1;
+else
+  cat <<EOF > ~/usr/share/X11/xkb/symbols/syl
 //
 // XKB symbol :: Syloti Nagri InScript-based Layout
 // Ref: N/A
@@ -84,7 +87,20 @@ xkb_symbols "basic" {
 
 };
 EOF
+fi
 
-sed -i -e "0, /<\/layout>/{s/<\/layout>/<\/layout>\n    <layout>\n      <configItem>\n        <name>syl<\/name>\n        <shortDescription>syl<\/shortDescription>\n        <description>Syloti Nagri<\/description>\n        <languageList>\n          <iso639Id>syl<\/iso639Id>\n        <\/languageList>\n      <\/configItem>\n      <variantList\/>\n    <\/layout>/}" ~/evdevtest.xml
+if grep -q "Syloti Nagri" ~/usr/share/X11/xkb/rules/evdev.lst; then
+  echo "Syloti Nagri already exists in ~/usr/share/X11/xkb/rules/evdev.lst - have you done this before?"; exit 1;
+else
+  sed -i -e "0, /Turkmen/{s/Turkmen/Turkmen\n  syl             Syloti Nagri/}" ~/usr/share/X11/xkb/rules/evdev.lst
+fi
 
-sed -i -e "0, /Turkmen/{s/Turkmen/Turkmen\n  syl             Syloti Nagri/}" ~/testevdev.lst
+
+if grep -q "Syloti Nagri" ~/usr/share/X11/xkb/rules/evdev.xml; then
+  echo "Syloti Nagri already exists in ~/usr/share/X11/xkb/rules/evdev.xml - have you done this before?"; exit 1;
+else
+  sed -i -e "0, /<\/layout>/{s/<\/layout>/<\/layout>\n    <layout>\n      <configItem>\n        <name>syl<\/name>\n        <shortDescription>syl<\/shortDescription>\n        <description>Syloti Nagri<\/description>\n        <languageList>\n          <iso639Id>syl<\/iso639Id>\n        <\/languageList>\n      <\/configItem>\n      <variantList\/>\n    <\/layout>/}" ~/usr/share/X11/xkb/rules/evdev.xml
+fi
+
+
+echo "All done! Now log out and back in for the changes to take full effect."
