@@ -1,0 +1,1 @@
+This is a shell script for installing a Syloti Nagri keyboard on an Ubuntu machine. This script was tested on an Ubuntu 20.04 machine, and provides no guarantees that it will work on other distros or versions of Ubuntu.
