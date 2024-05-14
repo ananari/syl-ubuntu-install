@@ -2,15 +2,25 @@
 
 # Made by Anaïs Ahmed 24-01-2021
 
-if [ -f ~/usr/share/X11/xkb/symbols/syl ]; then
-  echo "~/usr/share/X11/xkb/symbols/syl already exists - have you done this before?"; exit 1;
+if (( $EUID != 0 )); then
+    echo "Please run as root."
+    exit
+fi
+if [ ! -d /usr/share/X11/xkb/symbols ]; then
+  echo "Can't find the right folder."; exit 1;
+fi
+if [ ! -f /usr/share/X11/xkb/rules/evdev.lst ] || [ ! -f /usr/share/X11/xkb/rules/evdev.xml ]; then
+  echo "Can't find the right files."; exit 1;
+fi
+if [ -f /usr/share/X11/xkb/symbols/syl ]; then
+  echo "/usr/share/X11/xkb/symbols/syl already exists - have you done this before?"; exit 1;
 else
-  cat <<EOF > ~/usr/share/X11/xkb/symbols/syl
+  cat <<EOF > /usr/share/X11/xkb/symbols/syl
 //
 // XKB symbol :: Syloti Nagri InScript-based Layout
 // Ref: N/A
 //
-// Author: Anais Ahmed <anaismahmed at gmail.com>
+// Author: Anais Ahmed <anais at anais dot cc>
 // Created: 06-10-2020
 // Last Updated: 06-10-2020
 // Version: 1.00.0
@@ -89,18 +99,18 @@ xkb_symbols "basic" {
 EOF
 fi
 
-if grep -q "Syloti Nagri" ~/usr/share/X11/xkb/rules/evdev.lst; then
-  echo "Syloti Nagri already exists in ~/usr/share/X11/xkb/rules/evdev.lst - have you done this before?"; exit 1;
+if grep -q "Syloti Nagri" /usr/share/X11/xkb/rules/evdev.lst; then
+  echo "Syloti Nagri already exists in /usr/share/X11/xkb/rules/evdev.lst - have you done this before?"; exit 1;
 else
-  sed -i -e "0, /Turkmen/{s/Turkmen/Turkmen\n  syl             Syloti Nagri/}" ~/usr/share/X11/xkb/rules/evdev.lst
+  sed -i -e "0, /Turkmen/{s/Turkmen/Turkmen\n  syl             Syloti Nagri/}" /usr/share/X11/xkb/rules/evdev.lst
 fi
 
 
-if grep -q "Syloti Nagri" ~/usr/share/X11/xkb/rules/evdev.xml; then
-  echo "Syloti Nagri already exists in ~/usr/share/X11/xkb/rules/evdev.xml - have you done this before?"; exit 1;
+if grep -q "Syloti Nagri" /usr/share/X11/xkb/rules/evdev.xml; then
+  echo "Syloti Nagri already exists in /usr/share/X11/xkb/rules/evdev.xml - have you done this before?"; exit 1;
 else
-  sed -i -e "0, /<\/layout>/{s/<\/layout>/<\/layout>\n    <layout>\n      <configItem>\n        <name>syl<\/name>\n        <shortDescription>syl<\/shortDescription>\n        <description>Syloti Nagri<\/description>\n        <languageList>\n          <iso639Id>syl<\/iso639Id>\n        <\/languageList>\n      <\/configItem>\n      <variantList\/>\n    <\/layout>/}" ~/usr/share/X11/xkb/rules/evdev.xml
+  sed -i -e "0, /<\/layout>/{s/<\/layout>/<\/layout>\n    <layout>\n      <configItem>\n        <name>syl<\/name>\n        <shortDescription>syl<\/shortDescription>\n        <description>Syloti Nagri<\/description>\n        <languageList>\n          <iso639Id>syl<\/iso639Id>\n        <\/languageList>\n      <\/configItem>\n      <variantList\/>\n    <\/layout>/}" /usr/share/X11/xkb/rules/evdev.xml
 fi
 
 
-echo "All done! Now log out and back in for the changes to take full effect."
+echo "All done! Now log out and back in, then go to your region and language settings and look for \"Syloti Nagri\"."
